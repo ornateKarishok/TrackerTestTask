@@ -3,6 +3,6 @@
     <string name="now">Сейчас:</string>
     <string name="zero">0.00</string>
     <string name="empty_string" />
-    <string name="Settings">Настройки</string>
+    <string name="settings">Настройки</string>
     <string name="reset">Сбросить</string>
 </resources>
