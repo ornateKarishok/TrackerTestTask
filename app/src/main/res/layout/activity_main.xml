@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     android:background="@color/pink">
 
+    <ImageButton
+        android:id="@+id/menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/transparent"
+        android:src="@drawable/ic_menu"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/top_gl"
         android:layout_width="wrap_content"
@@ -39,5 +48,16 @@
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/now_text_view"
         app:layout_constraintTop_toBottomOf="@+id/now_text_view" />
+
+    <ImageButton
+        android:id="@+id/plus_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_10"
+        android:layout_marginBottom="@dimen/margin_10"
+        android:backgroundTint="@android:color/transparent"
+        android:src="@drawable/ic_plus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
