@@ -14,4 +14,9 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="DefaultNumberPickerTheme" parent="Theme.TrackerTestTask">
+        <item name="colorControlNormal">@color/red</item>
+        <item name="android:textSize">@dimen/text_size_20</item>
+    </style>
+
 </resources>

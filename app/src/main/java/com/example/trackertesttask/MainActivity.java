@@ -2,7 +2,10 @@ package com.example.trackertesttask;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
@@ -11,7 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.PopupWindow;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -26,6 +32,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         menuButton.setOnClickListener(this);
         plusButton = findViewById(R.id.plus_button);
         plusButton.setOnClickListener(this);
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -52,12 +59,65 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void plusButtonClick() {
 
-        TimePickerDialog.OnTimeSetListener myTimeListener = (view, hourOfDay, minute) -> Toast.makeText(getApplicationContext(), hourOfDay + " " + minute, Toast.LENGTH_LONG).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, myTimeListener, 0, 0, true);
-        timePickerDialog.setTitle("Choose hour:");
-        timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        timePickerDialog.show();
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.select_time_window, null);
+        builder.setView(view);
+        NumberPicker hoursNumberPicker = (NumberPicker) view.findViewById(R.id.hours_number_picker);
+        NumberPicker minutesNumberPicker = (NumberPicker) view.findViewById(R.id.minutes_number_picker);
+        String[] hoursValue = new String[49];
+        for (int i = 0; i < 49; i++) {
+            hoursValue[i] = String.valueOf(i);
+        }
+        hoursNumberPicker.setMinValue(0);
+        hoursNumberPicker.setMaxValue(hoursValue.length - 1);
+
+
+        hoursNumberPicker.setDisplayedValues(hoursValue);
+        hoursNumberPicker.setWrapSelectorWheel(false);
+        hoursNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            }
+        });
+
+        String[] minutesValue = new String[59];
+        for (int i = 0; i < 59; i++) {
+            minutesValue[i] = String.valueOf(i);
+        }
+        minutesNumberPicker.setMinValue(0);
+        minutesNumberPicker.setMaxValue(minutesValue.length - 1);
+
+
+        minutesNumberPicker.setDisplayedValues(minutesValue);
+
+        for (int i = 0; i < 60; i++) {
+            minutesNumberPicker.setValue(i);
+        }
+        minutesNumberPicker.setWrapSelectorWheel(false);
+        minutesNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                }).setPositiveButton(R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //txtView.setText(String.valueOf(rating.getRating()));
+                        dialog.dismiss();
+                    }
+                });
+
+
+        builder.create();
+        builder.show();
     }
 
 

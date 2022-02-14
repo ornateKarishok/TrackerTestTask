@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_gl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.73" />
+
+    <ImageView
+        android:id="@+id/timer_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_20"
+        android:layout_marginTop="@dimen/margin_20"
+        android:src="@drawable/ic_timer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/select_the_number_of_hours_worked_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_10"
+        android:layout_marginTop="@dimen/margin_20"
+        android:text="@string/select_the_number_of_hours_worked"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_25"
+        app:layout_constraintLeft_toRightOf="@+id/timer_image_view"
+        app:layout_constraintRight_toLeftOf="@+id/right_gl"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/hours_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hours"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_20"
+        app:layout_constraintLeft_toLeftOf="@+id/select_the_number_of_hours_worked_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/select_the_number_of_hours_worked_text_view" />
+
+    <TextView
+        android:id="@+id/minutes_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_50"
+        android:text="@string/minutes"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_20"
+        app:layout_constraintLeft_toRightOf="@id/hours_text_view"
+        app:layout_constraintTop_toTopOf="@+id/hours_text_view" />
+
+    <NumberPicker
+        android:id="@+id/hours_number_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@style/DefaultNumberPickerTheme"
+        app:layout_constraintLeft_toLeftOf="@+id/hours_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/hours_text_view" />
+
+    <NumberPicker
+        android:id="@+id/minutes_number_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_20"
+        android:theme="@style/DefaultNumberPickerTheme"
+        app:layout_constraintLeft_toLeftOf="@+id/minutes_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/minutes_text_view" />
+</androidx.constraintlayout.widget.ConstraintLayout>
