@@ -1,59 +1,80 @@
-package com.example.trackertesttask;
+package com.example.trackertesttask.ui;
+
+import static com.example.trackertesttask.theme.util.DialogManager.showCustomAlertDialog;
+import static com.example.trackertesttask.theme.util.ThemeManager.setCustomizedThemes;
+import static com.example.trackertesttask.theme.util.ThemeStorage.getThemeColor;
+import static com.example.trackertesttask.theme.util.ThemeStorage.setThemeColor;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
-import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements View.OnClickListener {
-    ImageButton menuButton;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.trackertesttask.R;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ImageButton plusButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setCustomizedThemes(this, getThemeColor(this));
         setContentView(R.layout.activity_main);
-        menuButton = findViewById(R.id.menu_button);
-        menuButton.setOnClickListener(this);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.empty_string);
+        }
         plusButton = findViewById(R.id.plus_button);
         plusButton.setOnClickListener(this);
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    public void onButtonShowPopupWindowClick(View view) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(R.string.settings);
+        menu.add(R.string.reset);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getTitle().equals(getString(R.string.settings))) {
+            settingsPopupWindowShow(findViewById(android.R.id.content).getRootView());
+        } else {
+            Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void settingsPopupWindowShow(View view) {
         LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.menu_window, null);
+        @SuppressLint("InflateParams") View popupView = inflater.inflate(R.layout.settings_window, null);
 
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int WindowWidth = size.x;
-        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, WindowWidth - 500, menuButton.getHeight());
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+    }
 
-        popupView.setOnTouchListener((v, event) -> {
-            popupWindow.dismiss();
-            return true;
+    public void chooseColor(View view) {
+        showCustomAlertDialog(this, chosenColor -> {
+            if (chosenColor.equals(getThemeColor(getApplicationContext()))) {
+                return;
+            }
+            setThemeColor(getApplicationContext(), chosenColor);
+            setCustomizedThemes(getApplicationContext(), chosenColor);
+            recreate();
         });
     }
 
@@ -73,13 +94,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         hoursNumberPicker.setMinValue(0);
         hoursNumberPicker.setMaxValue(hoursValue.length - 1);
 
-
         hoursNumberPicker.setDisplayedValues(hoursValue);
         hoursNumberPicker.setWrapSelectorWheel(false);
-        hoursNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-            }
+        hoursNumberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
         });
 
         String[] minutesValue = new String[59];
@@ -89,30 +106,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
         minutesNumberPicker.setMinValue(0);
         minutesNumberPicker.setMaxValue(minutesValue.length - 1);
 
-
         minutesNumberPicker.setDisplayedValues(minutesValue);
 
         for (int i = 0; i < 60; i++) {
             minutesNumberPicker.setValue(i);
         }
         minutesNumberPicker.setWrapSelectorWheel(false);
-        minutesNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-            }
+        minutesNumberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
         });
 
         builder.setNegativeButton(R.string.cancel,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                }).setPositiveButton(R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //txtView.setText(String.valueOf(rating.getRating()));
-                        dialog.dismiss();
-                    }
+                (dialog, id) -> dialog.cancel()).setPositiveButton(R.string.ok,
+                (dialog, which) -> {
+                    //txtView.setText(String.valueOf(rating.getRating()));
+                    dialog.dismiss();
                 });
 
 
@@ -120,13 +127,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         builder.show();
     }
 
-
     @Override
     public void onClick(View view) {
-        if (view == menuButton) {
-            onButtonShowPopupWindowClick(view);
-        } else if (view == plusButton) {
-            plusButtonClick();
-        }
+        plusButtonClick();
     }
 }

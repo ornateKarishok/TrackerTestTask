@@ -10,4 +10,10 @@
     <string name="minutes">Минуты</string>
     <string name="cancel">Отмена</string>
     <string name="ok">OK</string>
+    <string name="edit_color">Изменить цвет</string>
+    <string name="edit_cost">Изменить цену</string>
+    <string name="edit_currency">Изменить валюту</string>
+    <string name="pink">pink</string>
+    <string name="yellow">yellow</string>
+    <string name="grey">grey</string>
 </resources>
