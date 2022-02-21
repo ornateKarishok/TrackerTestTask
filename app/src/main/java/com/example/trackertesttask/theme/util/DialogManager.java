@@ -30,4 +30,10 @@ public class DialogManager {
         });
         dialog.show();
     }
+    public static void showCustomAlertDialog(Context context) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.select_currency_window);
+        dialog.show();
+    }
 }

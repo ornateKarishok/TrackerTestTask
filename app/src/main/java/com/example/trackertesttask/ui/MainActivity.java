@@ -7,24 +7,37 @@ import static com.example.trackertesttask.theme.util.ThemeStorage.setThemeColor;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.trackertesttask.Countries;
+import com.example.trackertesttask.CountriesListAdapter;
 import com.example.trackertesttask.R;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, SearchView.OnQueryTextListener {
     ImageButton plusButton;
+    ListView list;
+    CountriesListAdapter adapter;
+    SearchView editsearch;
+    String[] animalNameList;
+    ArrayList<Countries> arraylist = new ArrayList<Countries>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +50,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         plusButton = findViewById(R.id.plus_button);
         plusButton.setOnClickListener(this);
 
+        animalNameList = new String[]{"Lion", "Tiger", "Dog",
+                "Cat", "Tortoise", "Rat", "Elephant", "Fox",
+                "Cow","Donkey","Monkey"};
+
+        // Locate the ListView in listview_main.xml
+        list = (ListView) findViewById(R.id.listview);
+
+        for (int i = 0; i < animalNameList.length; i++) {
+            Countries animalNames = new Countries(animalNameList[i]);
+            // Binds all strings into an array
+            arraylist.add(animalNames);
+        }
+
+        // Pass results to ListViewAdapter Class
+        adapter = new CountriesListAdapter(this, arraylist);
+
+        // Binds the Adapter to the ListView
+        list.setAdapter(adapter);
+
+        // Locate the EditText in listview_main.xml
+        editsearch = (SearchView) findViewById(R.id.search);
+        editsearch.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        String text = newText;
+        adapter.filter(text);
+        return false;
     }
 
     @Override
@@ -68,14 +116,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void chooseColor(View view) {
-        showCustomAlertDialog(this, chosenColor -> {
-            if (chosenColor.equals(getThemeColor(getApplicationContext()))) {
-                return;
-            }
-            setThemeColor(getApplicationContext(), chosenColor);
-            setCustomizedThemes(getApplicationContext(), chosenColor);
-            recreate();
-        });
+        showCustomAlertDialog(this,
+                chosenColor -> {
+                    if (chosenColor.equals(getThemeColor(getApplicationContext()))) {
+                        return;
+                    }
+                    setThemeColor(getApplicationContext(), chosenColor);
+                    setCustomizedThemes(getApplicationContext(), chosenColor);
+                    recreate();
+                });
+    }
+
+    public void changeCurrency(View view) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.select_currency_window);
+        dialog.show();
     }
 
     public void plusButtonClick() {

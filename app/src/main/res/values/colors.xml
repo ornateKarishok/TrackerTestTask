@@ -11,5 +11,5 @@
     <color name="dark_grey">#1d1d1d</color>
     <color name="colorPrimary">#ff1493</color>
     <color name="colorPrimaryDark">#ff1493</color>
-    <color name="colorAccent">#ffdb58</color>
+    <color name="colorAccent">#ff1493</color>
 </resources>

@@ -69,6 +69,7 @@
         android:textAllCaps="true"
         android:textColor="@color/red"
         android:textSize="@dimen/text_size_20"
+        android:onClick="changeCurrency"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/second_view" />
 
