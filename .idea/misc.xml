@@ -15,6 +15,7 @@
         <entry key="app/src/main/res/layout/menu_window.xml" value="0.31875" />
         <entry key="app/src/main/res/layout/select_color_window.xml" value="0.31875" />
         <entry key="app/src/main/res/layout/select_currency_wibdow.xml" value="0.31875" />
+        <entry key="app/src/main/res/layout/select_currency_window.xml" value="0.15677083333333333" />
         <entry key="app/src/main/res/layout/select_time_window.xml" value="0.33" />
         <entry key="app/src/main/res/layout/settings_window.xml" value="0.31875" />
       </map>

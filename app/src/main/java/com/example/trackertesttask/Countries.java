@@ -1,13 +1,13 @@
 package com.example.trackertesttask;
 
 public class Countries {
-    private String animalName;
+    private String countriesName;
 
-    public Countries(String animalName) {
-        this.animalName = animalName;
+    public Countries(String countriesName) {
+        this.countriesName = countriesName;
     }
 
-    public String getAnimalName() {
-        return this.animalName;
+    public String getCountriesName() {
+        return this.countriesName;
     }
 }

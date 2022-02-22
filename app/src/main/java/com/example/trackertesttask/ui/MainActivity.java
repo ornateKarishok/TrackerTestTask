@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton plusButton;
     ListView list;
     CountriesListAdapter adapter;
-    SearchView editsearch;
-    String[] animalNameList;
-    ArrayList<Countries> arraylist = new ArrayList<Countries>();
+    SearchView editSearch;
+    String[] countriesNameList;
+    ArrayList<Countries> arraylist = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,28 +50,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         plusButton = findViewById(R.id.plus_button);
         plusButton.setOnClickListener(this);
 
-        animalNameList = new String[]{"Lion", "Tiger", "Dog",
-                "Cat", "Tortoise", "Rat", "Elephant", "Fox",
-                "Cow","Donkey","Monkey"};
+        countriesNameList = new String[]{"Япония", "Китай", "Украина",
+                "Россия", "Индонезия", "Индия", "Таиланд", "Филипины",
+                "Сингапур", "Беларусия", "Чехия"};
 
-        // Locate the ListView in listview_main.xml
         list = (ListView) findViewById(R.id.listview);
 
-        for (int i = 0; i < animalNameList.length; i++) {
-            Countries animalNames = new Countries(animalNameList[i]);
-            // Binds all strings into an array
-            arraylist.add(animalNames);
+        for (String s : countriesNameList) {
+            arraylist.add(new Countries(s));
         }
-
-        // Pass results to ListViewAdapter Class
         adapter = new CountriesListAdapter(this, arraylist);
-
-        // Binds the Adapter to the ListView
         list.setAdapter(adapter);
-
-        // Locate the EditText in listview_main.xml
-        editsearch = (SearchView) findViewById(R.id.search);
-        editsearch.setOnQueryTextListener(this);
+        editSearch = (SearchView) findViewById(R.id.search);
+        editSearch.setOnQueryTextListener(this);
     }
 
     @Override
@@ -82,8 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        String text = newText;
-        adapter.filter(text);
+        adapter.filter(newText);
         return false;
     }
 

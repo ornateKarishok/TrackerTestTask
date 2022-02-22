@@ -15,29 +15,29 @@ public class CountriesListAdapter extends BaseAdapter {
 
     Context mContext;
     LayoutInflater inflater;
-    private List<Countries> animalNamesList = null;
-    private ArrayList<Countries> arraylist;
+    private final List<Countries> countriesNamesList;
+    private final ArrayList<Countries> arraylist;
 
-    public CountriesListAdapter(Context context, List<Countries> animalNamesList) {
+    public CountriesListAdapter(Context context, List<Countries> countriesNamesList) {
         mContext = context;
-        this.animalNamesList = animalNamesList;
+        this.countriesNamesList = countriesNamesList;
         inflater = LayoutInflater.from(mContext);
-        this.arraylist = new ArrayList<Countries>();
-        this.arraylist.addAll(animalNamesList);
+        this.arraylist = new ArrayList<>();
+        this.arraylist.addAll(countriesNamesList);
     }
 
-    public class ViewHolder {
+    public static class ViewHolder {
         TextView name;
     }
 
     @Override
     public int getCount() {
-        return animalNamesList.size();
+        return countriesNamesList.size();
     }
 
     @Override
     public Countries getItem(int position) {
-        return animalNamesList.get(position);
+        return countriesNamesList.get(position);
     }
 
     @Override
@@ -50,27 +50,24 @@ public class CountriesListAdapter extends BaseAdapter {
         if (view == null) {
             holder = new ViewHolder();
             view = inflater.inflate(R.layout.list_view_items, null);
-            // Locate the TextViews in listview_item.xml
             holder.name = (TextView) view.findViewById(R.id.name);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        // Set the results into TextViews
-        holder.name.setText(animalNamesList.get(position).getAnimalName());
+        holder.name.setText(countriesNamesList.get(position).getCountriesName());
         return view;
     }
 
-    // Filter Class
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
-        animalNamesList.clear();
+        countriesNamesList.clear();
         if (charText.length() == 0) {
-            animalNamesList.addAll(arraylist);
+            countriesNamesList.addAll(arraylist);
         } else {
             for (Countries wp : arraylist) {
-                if (wp.getAnimalName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    animalNamesList.add(wp);
+                if (wp.getCountriesName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    countriesNamesList.add(wp);
                 }
             }
         }
