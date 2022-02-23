@@ -7,37 +7,30 @@ import static com.example.trackertesttask.theme.util.ThemeStorage.setThemeColor;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
-import android.widget.SearchView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.trackertesttask.Countries;
-import com.example.trackertesttask.CountriesListAdapter;
+import com.example.trackertesttask.DataStorage;
 import com.example.trackertesttask.R;
+import com.mynameismidori.currencypicker.CurrencyPicker;
 
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String CURRENCY_ID = "currency";
     ImageButton plusButton;
-    ListView list;
-    CountriesListAdapter adapter;
-    SearchView editSearch;
-    String[] countriesNameList;
-    ArrayList<Countries> arraylist = new ArrayList<>();
+    TextView currency;
+    PopupWindow settingsPopupWindow;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,33 +41,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getSupportActionBar().setTitle(R.string.empty_string);
         }
         plusButton = findViewById(R.id.plus_button);
+        currency = findViewById(R.id.currency);
         plusButton.setOnClickListener(this);
+        currency.setText(DataStorage.getDataFromStorage(getApplicationContext(), CURRENCY_ID));
 
-        countriesNameList = new String[]{"Япония", "Китай", "Украина",
-                "Россия", "Индонезия", "Индия", "Таиланд", "Филипины",
-                "Сингапур", "Беларусия", "Чехия"};
-
-        list = (ListView) findViewById(R.id.listview);
-
-        for (String s : countriesNameList) {
-            arraylist.add(new Countries(s));
-        }
-        adapter = new CountriesListAdapter(this, arraylist);
-        list.setAdapter(adapter);
-        editSearch = (SearchView) findViewById(R.id.search);
-        editSearch.setOnQueryTextListener(this);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        adapter.filter(newText);
-        return false;
     }
 
     @Override
@@ -88,10 +58,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle().equals(getString(R.string.settings))) {
             settingsPopupWindowShow(findViewById(android.R.id.content).getRootView());
-        } else {
-            Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
+        } else if (item.getTitle().equals(getString(R.string.reset))) {
+            resetAlertDialogShow();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void resetAlertDialogShow() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.reset);
+        builder.setMessage("Вы действительно хотите удалить все отмеченные часы?");
+        builder.setPositiveButton(R.string.ok, (dialog, id) -> {
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
+        });
+        builder.create();
+        builder.show();
     }
 
     public void settingsPopupWindowShow(View view) {
@@ -101,8 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        settingsPopupWindow = new PopupWindow(popupView, width, height, true);
+        settingsPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
     }
 
     public void chooseColor(View view) {
@@ -117,11 +99,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
     }
 
+    public void changePrice(View view) {
+        settingsPopupWindow.dismiss();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        view = inflater.inflate(R.layout.change_price_window, null);
+        EditText editText = view.findViewById(R.id.edit_price_edit_text);
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+        builder.setView(view);
+        builder.setNegativeButton(R.string.cancel,
+                (dialog, id) -> dialog.cancel()).setPositiveButton(R.string.ok,
+                (dialog, which) -> {
+                    //txtView.setText(String.valueOf(rating.getRating()));
+                    dialog.dismiss();
+                });
+        builder.create();
+        builder.show();
+    }
+
     public void changeCurrency(View view) {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.select_currency_window);
-        dialog.show();
+        CurrencyPicker picker = CurrencyPicker.newInstance("Select Currency");
+        picker.setListener((name, code, symbol, flagDrawableResID) -> {
+            currency.setText(code);
+            DataStorage.setDataToStorage(getApplicationContext(), code, CURRENCY_ID);
+            picker.dismiss();
+            settingsPopupWindow.dismiss();
+        });
+        picker.show(getSupportFragmentManager(), "CURRENCY_PICKER");
     }
 
     public void plusButtonClick() {
