@@ -5,7 +5,6 @@ import static com.example.trackertesttask.theme.util.ThemeManager.setCustomizedT
 import static com.example.trackertesttask.theme.util.ThemeStorage.getThemeColor;
 import static com.example.trackertesttask.theme.util.ThemeStorage.setThemeColor;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -28,6 +27,8 @@ import com.mynameismidori.currencypicker.CurrencyPicker;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String CURRENCY_ID = "currency";
+    public static final String CURRENCY_PICKER = "CURRENCY_PICKER";
+    public static final String SELECT_CURRENCY_WINDOW_TITLE = "Select Currency";
     ImageButton plusButton;
     TextView currency;
     PopupWindow settingsPopupWindow;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void resetAlertDialogShow() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.reset);
-        builder.setMessage("Вы действительно хотите удалить все отмеченные часы?");
+        builder.setMessage(R.string.are_you_you_want_delete_all_marked_hours);
         builder.setPositiveButton(R.string.ok, (dialog, id) -> {
         });
         builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void settingsPopupWindowShow(View view) {
         LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);
-        @SuppressLint("InflateParams") View popupView = inflater.inflate(R.layout.settings_window, null);
+        View popupView = inflater.inflate(R.layout.settings_window, null);
 
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -102,32 +103,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void changePrice(View view) {
         settingsPopupWindow.dismiss();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         LayoutInflater inflater = this.getLayoutInflater();
         view = inflater.inflate(R.layout.change_price_window, null);
         EditText editText = view.findViewById(R.id.edit_price_edit_text);
+        TextView inputPricePerHour = view.findViewById(R.id.input_price_per_hour_tw);
+        inputPricePerHour.setText(getString(R.string.input_price_per_hour) + getString(R.string.open_bracket) + DataStorage.getDataFromStorage(getApplicationContext(), CURRENCY_ID) + getString(R.string.close_bracket));
         editText.setFocusableInTouchMode(true);
         editText.requestFocus();
         builder.setView(view);
         builder.setNegativeButton(R.string.cancel,
                 (dialog, id) -> dialog.cancel()).setPositiveButton(R.string.ok,
-                (dialog, which) -> {
-                    //txtView.setText(String.valueOf(rating.getRating()));
-                    dialog.dismiss();
-                });
+                (dialog, which) -> dialog.dismiss());
         builder.create();
         builder.show();
     }
 
     public void changeCurrency(View view) {
-        CurrencyPicker picker = CurrencyPicker.newInstance("Select Currency");
+        CurrencyPicker picker = CurrencyPicker.newInstance(SELECT_CURRENCY_WINDOW_TITLE);
         picker.setListener((name, code, symbol, flagDrawableResID) -> {
             currency.setText(code);
             DataStorage.setDataToStorage(getApplicationContext(), code, CURRENCY_ID);
             picker.dismiss();
             settingsPopupWindow.dismiss();
         });
-        picker.show(getSupportFragmentManager(), "CURRENCY_PICKER");
+        picker.show(getSupportFragmentManager(), CURRENCY_PICKER);
     }
 
     public void plusButtonClick() {
@@ -169,10 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         builder.setNegativeButton(R.string.cancel,
                 (dialog, id) -> dialog.cancel()).setPositiveButton(R.string.ok,
-                (dialog, which) -> {
-                    //txtView.setText(String.valueOf(rating.getRating()));
-                    dialog.dismiss();
-                });
+                (dialog, which) -> dialog.dismiss());
 
 
         builder.create();

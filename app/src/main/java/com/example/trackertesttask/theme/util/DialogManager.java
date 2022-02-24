@@ -6,7 +6,6 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.example.trackertesttask.R;
-import com.example.trackertesttask.theme.util.ColorDialogCallback;
 
 public class DialogManager {
     public static void showCustomAlertDialog(Context context, final ColorDialogCallback callback) {
@@ -28,12 +27,6 @@ public class DialogManager {
             callback.onChosen(greyColor.getText().toString());
             dialog.cancel();
         });
-        dialog.show();
-    }
-    public static void showCustomAlertDialog(Context context) {
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.select_currency_window);
         dialog.show();
     }
 }
