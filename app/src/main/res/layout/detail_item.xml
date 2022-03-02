@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/quantity_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pink"
+            android:textSize="@dimen/text_size_20"
+            android:layout_marginTop="@dimen/margin_10"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/hours_tw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_10"
+            android:text="@string/hours_"
+            android:textColor="@color/pink"
+            android:textSize="@dimen/text_size_20"
+            app:layout_constraintLeft_toRightOf="@+id/quantity_hours"
+            app:layout_constraintTop_toTopOf="@+id/quantity_hours" />
+
+        <TextView
+            android:id="@+id/sum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_10"
+            android:textColor="@color/pink"
+            android:textSize="@dimen/text_size_20"
+            app:layout_constraintLeft_toRightOf="@+id/hours_tw"
+            app:layout_constraintTop_toTopOf="@+id/hours_tw" />
+
+        <TextView
+            android:id="@+id/currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_10"
+            android:textColor="@color/pink"
+            android:textSize="@dimen/text_size_20"
+            app:layout_constraintLeft_toRightOf="@+id/sum"
+            app:layout_constraintTop_toTopOf="@+id/hours_tw" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pink"
+            android:textSize="@dimen/text_size_16"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:padding="@dimen/padding_10"
+            app:layout_constraintTop_toBottomOf="@+id/quantity_hours" />
+
+        <ImageView
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_10"
+            android:src="@drawable/ic_delete_detail"
+            app:layout_constraintBottom_toBottomOf="@+id/date"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

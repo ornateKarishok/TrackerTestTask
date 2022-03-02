@@ -1,11 +1,12 @@
 package com.example.trackertesttask.ui;
 
+import static com.example.trackertesttask.util.DataStorage.getThemeColor;
 import static com.example.trackertesttask.theme.util.DialogManager.showCustomAlertDialog;
 import static com.example.trackertesttask.theme.util.ThemeManager.setCustomizedThemes;
-import static com.example.trackertesttask.theme.util.ThemeStorage.getThemeColor;
-import static com.example.trackertesttask.theme.util.ThemeStorage.setThemeColor;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,16 +22,25 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.trackertesttask.DataStorage;
+import com.example.trackertesttask.util.DataStorage;
 import com.example.trackertesttask.R;
+import com.example.trackertesttask.model.WorkSession;
 import com.mynameismidori.currencypicker.CurrencyPicker;
+
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String CURRENCY_ID = "currency";
-    public static final String CURRENCY_PICKER = "CURRENCY_PICKER";
-    public static final String SELECT_CURRENCY_WINDOW_TITLE = "Select Currency";
+    public static final String CURRENCY_PICKER = "currency picker";
+    public static final String SELECT_CURRENCY_WINDOW_TITLE = "Select currency";
+    public static final String SUM_PER_HOUR = "Sum per hour";
+    public static final String SHARED_PREFERENCES_ID = "Theme";
     ImageButton plusButton;
     TextView currency;
+    TextView sum;
+    TextView detailButton;
     PopupWindow settingsPopupWindow;
 
     @Override
@@ -42,10 +52,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getSupportActionBar().setTitle(R.string.empty_string);
         }
         plusButton = findViewById(R.id.plus_button);
+        detailButton = findViewById(R.id.details_text_view);
         currency = findViewById(R.id.currency);
+        sum = findViewById(R.id.sum_text_view);
         plusButton.setOnClickListener(this);
-        currency.setText(DataStorage.getDataFromStorage(getApplicationContext(), CURRENCY_ID));
+        detailButton.setOnClickListener(this);
+        List<WorkSession> workSessions = DataStorage.getListFromStorage(this);
+        setValueToSumTextView(workSessions);
+        currency.setText(DataStorage.getDataFromStorage(this, CURRENCY_ID));
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        List<WorkSession> workSessions = DataStorage.getListFromStorage(this);
+        setValueToSumTextView(workSessions);
     }
 
     @Override
@@ -62,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (item.getTitle().equals(getString(R.string.reset))) {
             resetAlertDialogShow();
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -70,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setTitle(R.string.reset);
         builder.setMessage(R.string.are_you_you_want_delete_all_marked_hours);
         builder.setPositiveButton(R.string.ok, (dialog, id) -> {
+            DataStorage.setListToStorage(this, new LinkedList<WorkSession>());
+            setValueToSumTextView(DataStorage.getListFromStorage(this));
         });
         builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
         });
@@ -91,11 +116,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void chooseColor(View view) {
         showCustomAlertDialog(this,
                 chosenColor -> {
-                    if (chosenColor.equals(getThemeColor(getApplicationContext()))) {
+                    if (chosenColor.equals(getThemeColor(this))) {
                         return;
                     }
-                    setThemeColor(getApplicationContext(), chosenColor);
-                    setCustomizedThemes(getApplicationContext(), chosenColor);
+                    DataStorage.setDataToStorage(this, chosenColor, SHARED_PREFERENCES_ID);
+                    setCustomizedThemes(this, chosenColor);
                     recreate();
                 });
     }
@@ -107,13 +132,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         view = inflater.inflate(R.layout.change_price_window, null);
         EditText editText = view.findViewById(R.id.edit_price_edit_text);
         TextView inputPricePerHour = view.findViewById(R.id.input_price_per_hour_tw);
-        inputPricePerHour.setText(getString(R.string.input_price_per_hour) + getString(R.string.open_bracket) + DataStorage.getDataFromStorage(getApplicationContext(), CURRENCY_ID) + getString(R.string.close_bracket));
+        inputPricePerHour.setText(getString(R.string.input_price_per_hour) + getString(R.string.open_bracket) + DataStorage.getDataFromStorage(this, CURRENCY_ID) + getString(R.string.close_bracket));
         editText.setFocusableInTouchMode(true);
         editText.requestFocus();
         builder.setView(view);
         builder.setNegativeButton(R.string.cancel,
-                (dialog, id) -> dialog.cancel()).setPositiveButton(R.string.ok,
-                (dialog, which) -> dialog.dismiss());
+                (dialog, id) -> dialog.cancel())
+                .setPositiveButton(R.string.ok,
+                        (dialog, id) -> {
+                            DataStorage.setDataToStorage(getApplicationContext(), String.valueOf(editText.getText()), SUM_PER_HOUR);
+                            setValueToSumTextView(DataStorage.getListFromStorage(getApplicationContext()));
+                        });
         builder.create();
         builder.show();
     }
@@ -122,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CurrencyPicker picker = CurrencyPicker.newInstance(SELECT_CURRENCY_WINDOW_TITLE);
         picker.setListener((name, code, symbol, flagDrawableResID) -> {
             currency.setText(code);
-            DataStorage.setDataToStorage(getApplicationContext(), code, CURRENCY_ID);
+            DataStorage.setDataToStorage(this, code, CURRENCY_ID);
             picker.dismiss();
             settingsPopupWindow.dismiss();
         });
@@ -168,15 +197,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         builder.setNegativeButton(R.string.cancel,
                 (dialog, id) -> dialog.cancel()).setPositiveButton(R.string.ok,
-                (dialog, which) -> dialog.dismiss());
-
-
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        double workTime = hoursNumberPicker.getValue() + (minutesNumberPicker.getValue() / 60);
+                        List<WorkSession> workSessions = saveWorkSession(workTime);
+                        setValueToSumTextView(workSessions);
+                    }
+                });
         builder.create();
         builder.show();
     }
 
+    private List<WorkSession> saveWorkSession(double workTime) {
+        List<WorkSession> workSessions = DataStorage.getListFromStorage(this);
+        Date date = new Date();
+        WorkSession workSession = new WorkSession(workTime, date);
+        workSessions.add(workSession);
+        DataStorage.setListToStorage(this, workSessions);
+        return workSessions;
+    }
+
+    private void setValueToSumTextView(List<WorkSession> workSessions) {
+        TextView detailTextView = findViewById(R.id.details_text_view);
+        String fromStorage = DataStorage.getDataFromStorage(this, SUM_PER_HOUR);
+        if (fromStorage.equals(" ") || workSessions.isEmpty()) {
+            sum.setText(R.string.zero);
+            detailTextView.setVisibility(View.GONE);
+        } else {
+            double sumPerHour = Double.parseDouble(fromStorage);
+            double totalSum = 0;
+            for (WorkSession session : workSessions) {
+                totalSum += (session.getDuration() * sumPerHour);
+            }
+            sum.setText(String.valueOf(totalSum));
+            detailTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void detailButtonClick() {
+        Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
+        startActivity(myIntent);
+    }
+
     @Override
     public void onClick(View view) {
-        plusButtonClick();
+        if (view.getId() == R.id.plus_button) {
+            plusButtonClick();
+        } else if (view.getId() == R.id.details_text_view) {
+            detailButtonClick();
+        }
     }
 }

@@ -12,7 +12,9 @@
     <dimen name="margin_30">30dp</dimen>
     <dimen name="margin_50">50dp</dimen>
     <dimen name="padding_10">10dp</dimen>
+    <dimen name="padding_15">15dp</dimen>
     <dimen name="padding_20">20dp</dimen>
+    <dimen name="size_0">0dp</dimen>
     <dimen name="size_2">2dp</dimen>
     <dimen name="size_70">70dp</dimen>
 </resources>
