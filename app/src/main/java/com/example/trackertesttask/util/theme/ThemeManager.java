@@ -1,4 +1,4 @@
-package com.example.trackertesttask.theme.util;
+package com.example.trackertesttask.util.theme;
 
 import android.content.Context;
 

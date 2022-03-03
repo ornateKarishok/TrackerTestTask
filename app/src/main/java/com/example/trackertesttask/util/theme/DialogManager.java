@@ -1,4 +1,4 @@
-package com.example.trackertesttask.theme.util;
+package com.example.trackertesttask.util.theme;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.example.trackertesttask.R;
+import com.example.trackertesttask.util.theme.ColorDialogCallback;
 
 public class DialogManager {
     public static void showCustomAlertDialog(Context context, final ColorDialogCallback callback) {

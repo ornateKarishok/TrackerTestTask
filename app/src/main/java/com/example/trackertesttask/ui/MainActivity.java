@@ -1,11 +1,10 @@
 package com.example.trackertesttask.ui;
 
+import static com.example.trackertesttask.util.theme.DialogManager.showCustomAlertDialog;
+import static com.example.trackertesttask.util.theme.ThemeManager.setCustomizedThemes;
 import static com.example.trackertesttask.util.DataStorage.getThemeColor;
-import static com.example.trackertesttask.theme.util.DialogManager.showCustomAlertDialog;
-import static com.example.trackertesttask.theme.util.ThemeManager.setCustomizedThemes;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -22,9 +21,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.trackertesttask.util.DataStorage;
 import com.example.trackertesttask.R;
 import com.example.trackertesttask.model.WorkSession;
+import com.example.trackertesttask.util.DataStorage;
 import com.mynameismidori.currencypicker.CurrencyPicker;
 
 import java.util.Date;
@@ -202,12 +201,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         builder.setNegativeButton(R.string.cancel,
                 (dialog, id) -> dialog.cancel()).setPositiveButton(R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        double workTime = hoursNumberPicker.getValue() + (minutesNumberPicker.getValue() / 60f);
-                        List<WorkSession> workSessions = saveWorkSession(workTime);
-                        setValueToSumTextView(workSessions);
-                    }
+                (dialog, id) -> {
+                    double workTime = hoursNumberPicker.getValue() + (minutesNumberPicker.getValue() / 60f);
+                    List<WorkSession> workSessions = saveWorkSession(workTime);
+                    setValueToSumTextView(workSessions);
                 });
         builder.create();
         builder.show();

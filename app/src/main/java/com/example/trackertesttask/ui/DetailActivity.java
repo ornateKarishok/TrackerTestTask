@@ -1,7 +1,7 @@
 package com.example.trackertesttask.ui;
 
 import static com.example.trackertesttask.util.DataStorage.getThemeColor;
-import static com.example.trackertesttask.theme.util.ThemeManager.setCustomizedThemes;
+import static com.example.trackertesttask.util.theme.ThemeManager.setCustomizedThemes;
 
 import android.os.Bundle;
 import android.view.MenuItem;
