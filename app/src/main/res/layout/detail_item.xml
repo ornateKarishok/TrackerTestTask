@@ -12,9 +12,9 @@
             android:id="@+id/quantity_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
             android:textColor="@color/pink"
             android:textSize="@dimen/text_size_20"
-            android:layout_marginTop="@dimen/margin_10"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -53,17 +53,18 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="@dimen/padding_10"
             android:textColor="@color/pink"
             android:textSize="@dimen/text_size_16"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:padding="@dimen/padding_10"
             app:layout_constraintTop_toBottomOf="@+id/quantity_hours" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_10"
+            android:background="@android:color/transparent"
             android:src="@drawable/ic_delete_detail"
             app:layout_constraintBottom_toBottomOf="@+id/date"
             app:layout_constraintRight_toRightOf="parent"

@@ -126,7 +126,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void changePrice(View view) {
-        settingsPopupWindow.dismiss();
+        if (settingsPopupWindow != null) {
+            settingsPopupWindow.dismiss();
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         view = inflater.inflate(R.layout.change_price_window, null);
@@ -140,8 +142,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 (dialog, id) -> dialog.cancel())
                 .setPositiveButton(R.string.ok,
                         (dialog, id) -> {
-                            DataStorage.setDataToStorage(getApplicationContext(), String.valueOf(editText.getText()), SUM_PER_HOUR);
-                            setValueToSumTextView(DataStorage.getListFromStorage(getApplicationContext()));
+                    String textFromEditText = String.valueOf(editText.getText());
+                            if (!textFromEditText.equals("")) {
+                                DataStorage.setDataToStorage(getApplicationContext(), textFromEditText, SUM_PER_HOUR);
+                                setValueToSumTextView(DataStorage.getListFromStorage(getApplicationContext()));
+                            }
                         });
         builder.create();
         builder.show();
@@ -199,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 (dialog, id) -> dialog.cancel()).setPositiveButton(R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        double workTime = hoursNumberPicker.getValue() + (minutesNumberPicker.getValue() / 60);
+                        double workTime = hoursNumberPicker.getValue() + (minutesNumberPicker.getValue() / 60f);
                         List<WorkSession> workSessions = saveWorkSession(workTime);
                         setValueToSumTextView(workSessions);
                     }
@@ -242,7 +247,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.plus_button) {
-            plusButtonClick();
+            String fromStorage = DataStorage.getDataFromStorage(this, SUM_PER_HOUR);
+            if (fromStorage.equals(" ") || fromStorage.equals("")) {
+                changePrice(view);
+            } else {
+                plusButtonClick();
+            }
+
         } else if (view.getId() == R.id.details_text_view) {
             detailButtonClick();
         }
