@@ -36,10 +36,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String SELECT_CURRENCY_WINDOW_TITLE = "Select currency";
     public static final String SUM_PER_HOUR = "Sum per hour";
     public static final String SHARED_PREFERENCES_ID = "Theme";
-    ImageButton plusButton;
-    TextView currency;
-    TextView sum;
-    TextView detailButton;
+    ImageButton plusButton = findViewById(R.id.plus_button);
+    TextView currency = findViewById(R.id.currency);
+    TextView sum = findViewById(R.id.sum_text_view);
+    TextView detailButton = findViewById(R.id.details_text_view);
     PopupWindow settingsPopupWindow;
 
     @Override
@@ -50,10 +50,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.empty_string);
         }
-        plusButton = findViewById(R.id.plus_button);
-        detailButton = findViewById(R.id.details_text_view);
-        currency = findViewById(R.id.currency);
-        sum = findViewById(R.id.sum_text_view);
         plusButton.setOnClickListener(this);
         detailButton.setOnClickListener(this);
         List<WorkSession> workSessions = DataStorage.getListFromStorage(this);
@@ -140,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 (dialog, id) -> dialog.cancel())
                 .setPositiveButton(R.string.ok,
                         (dialog, id) -> {
-                    String textFromEditText = String.valueOf(editText.getText());
+                            String textFromEditText = String.valueOf(editText.getText());
                             if (!textFromEditText.equals("")) {
                                 DataStorage.setDataToStorage(getApplicationContext(), textFromEditText, SUM_PER_HOUR);
                                 setValueToSumTextView(DataStorage.getListFromStorage(getApplicationContext()));
@@ -168,8 +164,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.select_time_window, null);
         builder.setView(view);
-        NumberPicker hoursNumberPicker = (NumberPicker) view.findViewById(R.id.hours_number_picker);
-        NumberPicker minutesNumberPicker = (NumberPicker) view.findViewById(R.id.minutes_number_picker);
+        NumberPicker hoursNumberPicker = view.findViewById(R.id.hours_number_picker);
+        NumberPicker minutesNumberPicker = view.findViewById(R.id.minutes_number_picker);
         String[] hoursValue = new String[49];
         for (int i = 0; i < 49; i++) {
             hoursValue[i] = String.valueOf(i);
