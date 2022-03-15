@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view.getId() == R.id.plus_button) {
             String fromStorage = DataStorage.getDataFromStorage(this, SUM_PER_HOUR);
-            if (fromStorage.equals(" ") || fromStorage.equals("")) {
+            if (fromStorage.isEmpty()) {
                 changePrice(view);
             } else {
                 plusButtonClick();
