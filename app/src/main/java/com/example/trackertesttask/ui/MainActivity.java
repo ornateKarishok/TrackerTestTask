@@ -36,11 +36,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String SELECT_CURRENCY_WINDOW_TITLE = "Select currency";
     public static final String SUM_PER_HOUR = "Sum per hour";
     public static final String SHARED_PREFERENCES_ID = "Theme";
-    ImageButton plusButton = findViewById(R.id.plus_button);
-    TextView currency = findViewById(R.id.currency);
-    TextView sum = findViewById(R.id.sum_text_view);
-    TextView detailButton = findViewById(R.id.details_text_view);
+    public static final int STATE_SETTINGS = 0;
+    public static final int STATE_RESET = 1;
+    ImageButton plusButton;
+    TextView currency;
+    TextView sum;
+    TextView detailButton;
     PopupWindow settingsPopupWindow;
+    NumberPicker hoursNumberPicker;
+    NumberPicker minutesNumberPicker;
+    EditText editPrise;
+    TextView inputPricePerHour;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.empty_string);
         }
+        plusButton = findViewById(R.id.plus_button);
+        detailButton = findViewById(R.id.details_text_view);
+        currency = findViewById(R.id.currency);
+        sum = findViewById(R.id.sum_text_view);
         plusButton.setOnClickListener(this);
         detailButton.setOnClickListener(this);
         List<WorkSession> workSessions = DataStorage.getListFromStorage(this);
@@ -67,16 +77,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(R.string.settings);
-        menu.add(R.string.reset);
+        menu.add(0, STATE_SETTINGS, 0,R.string.settings);
+        menu.add(0, STATE_RESET, 0,R.string.reset);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getTitle().equals(getString(R.string.settings))) {
+        if (item.getItemId() == STATE_SETTINGS) {
             settingsPopupWindowShow(findViewById(android.R.id.content).getRootView());
-        } else if (item.getTitle().equals(getString(R.string.reset))) {
+        } else if (item.getItemId() == STATE_RESET) {
             resetAlertDialogShow();
         }
 
@@ -126,17 +136,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         view = inflater.inflate(R.layout.change_price_window, null);
-        EditText editText = view.findViewById(R.id.edit_price_edit_text);
-        TextView inputPricePerHour = view.findViewById(R.id.input_price_per_hour_tw);
+        editPrise = view.findViewById(R.id.edit_price_edit_text);
+        inputPricePerHour = view.findViewById(R.id.input_price_per_hour_tw);
         inputPricePerHour.setText(getString(R.string.input_price_per_hour) + getString(R.string.open_bracket) + DataStorage.getDataFromStorage(this, CURRENCY_ID) + getString(R.string.close_bracket));
-        editText.setFocusableInTouchMode(true);
-        editText.requestFocus();
+        editPrise.setFocusableInTouchMode(true);
+        editPrise.requestFocus();
         builder.setView(view);
         builder.setNegativeButton(R.string.cancel,
                 (dialog, id) -> dialog.cancel())
                 .setPositiveButton(R.string.ok,
                         (dialog, id) -> {
-                            String textFromEditText = String.valueOf(editText.getText());
+                    String textFromEditText = String.valueOf(editPrise.getText());
                             if (!textFromEditText.equals("")) {
                                 DataStorage.setDataToStorage(getApplicationContext(), textFromEditText, SUM_PER_HOUR);
                                 setValueToSumTextView(DataStorage.getListFromStorage(getApplicationContext()));
@@ -164,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.select_time_window, null);
         builder.setView(view);
-        NumberPicker hoursNumberPicker = view.findViewById(R.id.hours_number_picker);
-        NumberPicker minutesNumberPicker = view.findViewById(R.id.minutes_number_picker);
+        hoursNumberPicker = view.findViewById(R.id.hours_number_picker);
+        minutesNumberPicker = view.findViewById(R.id.minutes_number_picker);
         String[] hoursValue = new String[49];
         for (int i = 0; i < 49; i++) {
             hoursValue[i] = String.valueOf(i);
@@ -215,11 +225,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setValueToSumTextView(List<WorkSession> workSessions) {
-        TextView detailTextView = findViewById(R.id.details_text_view);
         String fromStorage = DataStorage.getDataFromStorage(this, SUM_PER_HOUR);
         if (fromStorage.equals(" ") || workSessions.isEmpty()) {
             sum.setText(R.string.zero);
-            detailTextView.setVisibility(View.GONE);
+            detailButton.setVisibility(View.GONE);
         } else {
             double sumPerHour = Double.parseDouble(fromStorage);
             double totalSum = 0;
@@ -227,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 totalSum += (session.getDuration() * sumPerHour);
             }
             sum.setText(String.valueOf(totalSum));
-            detailTextView.setVisibility(View.VISIBLE);
+            detailButton.setVisibility(View.VISIBLE);
         }
     }
 
