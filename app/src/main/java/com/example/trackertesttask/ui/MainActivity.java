@@ -95,8 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             DataStorage.setListToStorage(this, new LinkedList<WorkSession>());
             setValueToSumTextView(DataStorage.getListFromStorage(this));
         });
-        builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
-        });
+        builder.setNegativeButton(R.string.cancel, null);
         builder.create();
         builder.show();
     }
